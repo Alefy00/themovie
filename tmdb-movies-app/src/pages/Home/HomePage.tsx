@@ -16,7 +16,7 @@ export default function HomePage() {
   }, [dispatch, data.length]);
 
   return (
-    <section className="max-w-7xl mx-auto text-white">
+    <section className="max-w-7xl mx-auto pt-24 pb-12 px-4 text-white">
       <h1 className="sr-only">Filmes Populares</h1>
 
       {error && (
@@ -29,7 +29,18 @@ export default function HomePage() {
         <p className="text-gray-300 text-sm">Carregando filmes...</p>
       )}
 
-      <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 mt-6">
+      <div
+        className="
+          grid gap-4 mt-6
+          grid-cols-1
+          sm:grid-cols-2
+          md:grid-cols-3
+          lg:grid-cols-4
+          xl:grid-cols-5
+          2xl:grid-cols-6
+          justify-items-center
+        "
+      >
         {data.map((movie) => (
           <MovieCard
             key={movie.id}

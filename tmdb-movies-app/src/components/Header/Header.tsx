@@ -27,21 +27,20 @@ export default function Header() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-[#1f2733] border-b border-black/40">
-      <div className="max-w-7xl mx-auto flex flex-col gap-3 px-4 py-4 md:flex-row md:items-center md:justify-between">
-        {/* Logo + Busca */}
-        <div className="flex flex-col md:flex-row md:items-center md:gap-6 w-full">
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 text-yellow-50">
-            <span className="text-xl">🎬</span>
-            <span className="text-xl font-semibold text-[#facc15]">
-              MovieDB
-            </span>
-          </Link>
+      <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between px-4 py-4 gap-3">
+        {/* LOGO */}
+        <Link to="/" className="flex items-center gap-2 text-yellow-50">
+          <span className="text-xl">🎬</span>
+          <span className="text-xl font-semibold text-[#facc15]">
+            MovieDB
+          </span>
+        </Link>
 
-          {/* Busca */}
+        {/* CAMPO DE BUSCA CENTRALIZADO */}
+        <div className="flex-1 flex justify-center order-last md:order-none">
           <form
             onSubmit={handleSubmit}
-            className="w-full md:max-w-md mt-3 md:mt-0"
+            className="w-full max-w-md"
           >
             <input
               name="q"
@@ -55,7 +54,7 @@ export default function Header() {
           </form>
         </div>
 
-        {/* Navegação */}
+        {/* NAVEGAÇÃO */}
         <nav className="flex items-center gap-3 text-sm font-medium text-gray-200">
           <Link
             to="/"
