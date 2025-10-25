@@ -21,3 +21,12 @@ export const fetchPopularMovies = createAsyncThunk(
     };
   }
 );
+
+
+export const fetchMovieById = createAsyncThunk(
+  "movies/fetchMovieById",
+  async (id: number) => {
+    const movie = await moviesService.getById(id);
+    return movie;
+  }
+);

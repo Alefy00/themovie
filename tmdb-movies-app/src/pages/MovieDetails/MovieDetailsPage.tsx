@@ -1,82 +1,101 @@
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
-import TagPill from "../../components/TagPill/TagPill";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { fetchMovieById } from "../../features/movies/thunks";
 
-export default function MovieDetailsPage() {
-  // Vamos usar isso depois pra buscar dados reais via TMDB
-  const { id } = useParams();
+export default function MovieDetailPage() {
+  const { id } = useParams<{ id: string }>();
+  const dispatch = useAppDispatch();
 
-  // Mock inicial baseado no design
-  const movie = {
-    title: "Nome do Filme",
-    genres: ["Ação", "Aventura", "Ficção"],
-    releaseDate: "15 de março de 2024",
-    rating: 8.5,
-    overview:
-      "Esta é a sinopse do filme, onde descrevemos brevemente a trama, os personagens principais e o que torna este filme especial. A sinopse deve ser envolvente e dar ao usuário uma ideia clara do que esperar sem revelar spoilers importantes.",
-  };
+  const { data: movie, isLoading, error } = useAppSelector(
+    (state) => state.movies.current
+  );
+
+  // buscar filme ao montar ou trocar o id
+  useEffect(() => {
+    if (id) dispatch(fetchMovieById(Number(id)));
+  }, [id, dispatch]);
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-64 text-gray-400">
+        Carregando detalhes...
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex justify-center items-center h-64 text-red-400">
+        {error}
+      </div>
+    );
+  }
+
+  if (!movie) return null;
+
+  const backdropUrl = movie.backdrop_path
+    ? `https://image.tmdb.org/t/p/original${movie.backdrop_path}`
+    : null;
+
+  const genres =
+    movie.genres && movie.genres.length > 0
+      ? movie.genres.map((g) => g.name).join(", ")
+      : "Sem gênero";
 
   return (
-    <section className="max-w-7xl mx-auto">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Coluna esquerda = imagem grande */}
-        <div className="bg-gradient-to-b from-gray-600/40 to-gray-800/60 rounded-lg border border-black/20 shadow-md min-h-[260px] md:min-h-[320px] flex items-center justify-center text-gray-300 text-sm px-4">
-          <span>Imagem Backdrop</span>
+    <section className="max-w-6xl mx-auto px-4 py-10 text-white flex flex-col md:flex-row gap-8">
+      {/* imagem principal */}
+      <div className="w-full md:w-1/2">
+        {backdropUrl ? (
+          <img
+            src={backdropUrl}
+            alt={movie.title}
+            className="rounded-lg shadow-lg w-full h-auto object-cover"
+            loading="lazy"
+          />
+        ) : (
+          <div className="w-full h-72 bg-gray-700 rounded-lg flex items-center justify-center">
+            <span className="text-gray-300 text-sm">Sem imagem</span>
+          </div>
+        )}
+      </div>
+
+      {/* detalhes do filme */}
+      <div className="flex-1 flex flex-col justify-between">
+        <div>
+          <h1 className="text-3xl font-bold mb-2">{movie.title}</h1>
+
+          {movie.tagline && (
+            <p className="italic text-gray-400 mb-3">"{movie.tagline}"</p>
+          )}
+
+          <p className="text-sm text-gray-400 mb-4">
+            {genres} • {movie.release_date?.slice(0, 4)} • ⭐{" "}
+            {movie.vote_average?.toFixed(1)} • {movie.runtime} min
+          </p>
+
+          <p className="text-gray-300 leading-relaxed">{movie.overview}</p>
         </div>
 
-        {/* Coluna direita = conteúdo */}
-        <div className="text-white flex flex-col">
-          {/* Título */}
-          <h1 className="text-2xl font-semibold text-white">
-            {movie.title}
-          </h1>
+        <div className="mt-6 flex items-center gap-4">
+          <button
+            onClick={() => console.log("favoritar", movie.id)}
+            className="bg-yellow-400 text-black font-semibold px-5 py-2 rounded-md hover:bg-yellow-500 transition"
+          >
+            Favoritar ❤️
+          </button>
 
-          {/* Gêneros */}
-          <div className="flex flex-wrap gap-2 mt-4">
-            {movie.genres.map((g) => (
-              <TagPill key={g} label={g} />
-            ))}
-          </div>
-
-          {/* Infos (Data / Nota) */}
-          <div className="mt-4 space-y-2 text-sm text-gray-200">
-            <p>
-              <span className="font-semibold text-white">
-                Data de lançamento:
-              </span>{" "}
-              {movie.releaseDate}
-            </p>
-
-            <p className="flex items-center gap-2">
-              <span className="font-semibold text-white">Nota TMDB:</span>
-              <span className="inline-block text-xs font-semibold bg-yellow-400 text-black rounded-md px-2 py-[2px]">
-                {movie.rating.toFixed(1)}
-              </span>
-            </p>
-          </div>
-
-          {/* Sinopse */}
-          <div className="mt-6">
-            <h2 className="text-lg font-semibold text-white mb-2">
-              Sinopse
-            </h2>
-            <p className="text-sm text-gray-200 leading-relaxed">
-              {movie.overview}
-            </p>
-          </div>
-
-          {/* Botão Favoritar */}
-          <div className="mt-6">
-            <button
-              className="flex items-center gap-2 bg-red-600 hover:bg-red-500 text-white text-sm font-medium px-4 py-3 rounded-md transition"
-              onClick={() => {
-                // depois vamos disparar addFavorite(movie) via Redux
-                console.log("Adicionar aos favoritos:", id);
-              }}
+          {movie.homepage && (
+            <a
+              href={movie.homepage}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-yellow-400 hover:underline"
             >
-              <span className="text-base leading-none">❤️</span>
-              <span>Adicionar aos Favoritos</span>
-            </button>
-          </div>
+              Página oficial ↗
+            </a>
+          )}
         </div>
       </div>
     </section>

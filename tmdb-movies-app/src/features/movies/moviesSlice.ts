@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { fetchPopularMovies } from "./thunks";
+import { fetchMovieById, fetchPopularMovies } from "./thunks";
+import type { TmdbMovieDetail } from "../../services/moviesService";
 
 export type MovieLite = {
   id: number;
@@ -18,8 +19,15 @@ type PopularState = {
   error: string | null;
 };
 
+type CurrentMovieState = {
+  data: TmdbMovieDetail | null;
+  isLoading: boolean;
+  error: string | null;
+};
+
 type MoviesState = {
   popular: PopularState;
+  current: CurrentMovieState;
 };
 
 const initialState: MoviesState = {
@@ -31,6 +39,11 @@ const initialState: MoviesState = {
     isLoading: false,
     error: null,
   },
+  current: {
+    data: null,
+    isLoading: false,
+    error: null,
+  },
 };
 
 const moviesSlice = createSlice({
@@ -38,13 +51,12 @@ const moviesSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
+    // POPULARES
     builder
-      // pending -> loading
       .addCase(fetchPopularMovies.pending, (state) => {
         state.popular.isLoading = true;
         state.popular.error = null;
       })
-      // fulfilled -> sucesso
       .addCase(
         fetchPopularMovies.fulfilled,
         (
@@ -61,7 +73,6 @@ const moviesSlice = createSlice({
           state.popular.totalPages = action.payload.totalPages;
           state.popular.totalResults = action.payload.totalResults;
 
-          // primeira página sobrescreve, próximas páginas acumulam (infinite scroll)
           if (action.payload.page === 1) {
             state.popular.data = action.payload.movies;
           } else {
@@ -69,11 +80,29 @@ const moviesSlice = createSlice({
           }
         }
       )
-      // rejected -> erro
       .addCase(fetchPopularMovies.rejected, (state, action) => {
         state.popular.isLoading = false;
         state.popular.error =
-          action.error.message ?? "Erro ao carregar filmes populares.";
+          action.error.message ?? "Erro ao carregar filmes.";
+      });
+
+    // DETALHE
+    builder
+      .addCase(fetchMovieById.pending, (state) => {
+        state.current.isLoading = true;
+        state.current.error = null;
+      })
+      .addCase(
+        fetchMovieById.fulfilled,
+        (state, action: PayloadAction<TmdbMovieDetail>) => {
+          state.current.isLoading = false;
+          state.current.data = action.payload;
+        }
+      )
+      .addCase(fetchMovieById.rejected, (state, action) => {
+        state.current.isLoading = false;
+        state.current.error =
+          action.error.message ?? "Erro ao carregar detalhes.";
       });
   },
 });
