@@ -72,10 +72,6 @@ export default function SearchPage() {
             title={movie.title}
             rating={movie.rating}
             poster_path={movie.poster_path}
-            isFavorite={false} // depois ligamos no favoritesSlice
-            onToggleFavorite={() => {
-              console.log("toggle fav from search", movie.id);
-            }}
             customTitle={highlightTextWithBadge(movie.title, term)}
           />
         ))}

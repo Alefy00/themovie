@@ -2,6 +2,8 @@ import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { fetchMovieById } from "../../features/movies/thunks";
+import { toggleFavorite } from "../../features/favorites/favoritesSlice";
+import { selectIsFavoriteById } from "../../features/favorites/selectors";
 
 export default function MovieDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -11,9 +13,14 @@ export default function MovieDetailPage() {
     (state) => state.movies.current
   );
 
-  // buscar filme ao montar ou trocar o id
+  const isFavorite = useAppSelector((state) =>
+    movie ? selectIsFavoriteById(movie.id)(state) : false
+  );
+
   useEffect(() => {
-    if (id) dispatch(fetchMovieById(Number(id)));
+    if (id) {
+      dispatch(fetchMovieById(Number(id)));
+    }
   }, [id, dispatch]);
 
   if (isLoading) {
@@ -43,9 +50,23 @@ export default function MovieDetailPage() {
       ? movie.genres.map((g) => g.name).join(", ")
       : "Sem gênero";
 
+  function handleToggleFavorite() {
+    if (!movie) return; // garante em runtime
+
+    dispatch(
+      toggleFavorite({
+        id: movie!.id,
+        title: movie!.title,
+        vote_average: movie!.vote_average,
+        poster_path: movie!.poster_path ?? null,
+      })
+    );
+  }
+
+
   return (
     <section className="max-w-6xl mx-auto px-4 py-10 text-white flex flex-col md:flex-row gap-8">
-      {/* imagem principal */}
+      {/* imagem */}
       <div className="w-full md:w-1/2">
         {backdropUrl ? (
           <img
@@ -61,7 +82,7 @@ export default function MovieDetailPage() {
         )}
       </div>
 
-      {/* detalhes do filme */}
+      {/* conteúdo */}
       <div className="flex-1 flex flex-col justify-between">
         <div>
           <h1 className="text-3xl font-bold mb-2">{movie.title}</h1>
@@ -78,12 +99,17 @@ export default function MovieDetailPage() {
           <p className="text-gray-300 leading-relaxed">{movie.overview}</p>
         </div>
 
-        <div className="mt-6 flex items-center gap-4">
+        <div className="mt-6 flex items-center gap-4 flex-wrap">
           <button
-            onClick={() => console.log("favoritar", movie.id)}
-            className="bg-yellow-400 text-black font-semibold px-5 py-2 rounded-md hover:bg-yellow-500 transition"
+            onClick={handleToggleFavorite}
+            className={`font-semibold px-5 py-2 rounded-md transition
+              ${
+                isFavorite
+                  ? "bg-red-600 text-white hover:bg-red-500"
+                  : "bg-yellow-400 text-black hover:bg-yellow-500"
+              }`}
           >
-            Favoritar ❤️
+            {isFavorite ? "Remover dos Favoritos 💔" : "Adicionar aos Favoritos ❤️"}
           </button>
 
           {movie.homepage && (

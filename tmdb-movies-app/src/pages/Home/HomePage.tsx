@@ -37,10 +37,6 @@ export default function HomePage() {
             title={movie.title}
             rating={movie.rating}
             poster_path={movie.poster_path}
-            isFavorite={false}
-            onToggleFavorite={() => {
-              console.log("toggle fav", movie.id);
-            }}
           />
         ))}
       </div>
