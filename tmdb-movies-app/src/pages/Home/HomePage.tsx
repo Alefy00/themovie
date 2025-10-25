@@ -1,27 +1,43 @@
+import { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { fetchPopularMovies } from "../../features/movies/thunks";
 import MovieCard from "../../components/MovieCard/MovieCard";
 
 export default function HomePage() {
-  const mockMovies = [
-    { id: 1, title: "Título do Filme", rating: 8.5, isFavorite: false },
-    { id: 2, title: "Filme Favoritado", rating: 9.2, isFavorite: true },
-    { id: 3, title: "Outro Filme Popular", rating: 7.8, isFavorite: false },
-    { id: 4, title: "Mais um Filme", rating: 8.1, isFavorite: false },
-    { id: 5, title: "Filme Interessante", rating: 7.9, isFavorite: false },
-    { id: 6, title: "Último Filme", rating: 8.7, isFavorite: false },
-  ];
+  const dispatch = useAppDispatch();
+  const { data, isLoading, error } = useAppSelector(
+    (state) => state.movies.popular
+  );
+
+  useEffect(() => {
+    if (data.length === 0) {
+      dispatch(fetchPopularMovies(1));
+    }
+  }, [dispatch, data.length]);
 
   return (
-    <section className="max-w-7xl mx-auto">
+    <section className="max-w-7xl mx-auto text-white">
       <h1 className="sr-only">Filmes Populares</h1>
 
+      {error && (
+        <div className="text-red-400 text-sm bg-red-950/30 border border-red-600/40 rounded-md p-3 mb-4">
+          {error}
+        </div>
+      )}
+
+      {isLoading && data.length === 0 && (
+        <p className="text-gray-300 text-sm">Carregando filmes...</p>
+      )}
+
       <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 mt-6">
-        {mockMovies.map((movie) => (
+        {data.map((movie) => (
           <MovieCard
             key={movie.id}
             id={movie.id}
             title={movie.title}
             rating={movie.rating}
-            isFavorite={movie.isFavorite}
+            poster_path={movie.poster_path}
+            isFavorite={false}
             onToggleFavorite={() => {
               console.log("toggle fav", movie.id);
             }}

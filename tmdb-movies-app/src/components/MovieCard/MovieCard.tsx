@@ -4,8 +4,9 @@ type MovieCardProps = {
   id: number;
   title: string;
   rating: number;
+  poster_path?: string | null;
   isFavorite?: boolean;
-  customTitle?: React.ReactNode; // usado na busca pra destacar o termo
+  customTitle?: React.ReactNode;
   onToggleFavorite?: () => void;
 };
 
@@ -13,20 +14,32 @@ export default function MovieCard({
   id,
   title,
   rating,
+  poster_path,
   isFavorite = false,
   customTitle,
   onToggleFavorite,
 }: MovieCardProps) {
+  const posterUrl = poster_path
+    ? `https://image.tmdb.org/t/p/w300${poster_path}`
+    : null;
+
   return (
-    <div className="bg-[#2a3444] rounded-lg overflow-hidden shadow-md border border-black/20 flex flex-col w-full max-w-[220px]">
-      {/* área do poster */}
-      <div className="relative flex-1 min-h-[180px] bg-gradient-to-b from-gray-600/40 to-gray-800/60 flex items-center justify-center text-gray-300 text-sm">
-        {/* clique leva pro detalhe */}
+    <div className="bg-[#2a3444] rounded-lg overflow-hidden shadow-md border border-black/20 flex flex-col w-full max-w-[220px] transition-transform hover:-translate-y-[2px]">
+      <div className="relative flex-1 min-h-[180px] bg-gradient-to-b from-gray-600/40 to-gray-800/60 flex items-center justify-center text-gray-300 text-sm overflow-hidden">
         <Link
           to={`/movie/${id}`}
-          className="absolute inset-0 flex items-center justify-center text-gray-300 text-sm"
+          className="absolute inset-0 flex items-center justify-center"
         >
-          <span>Poster do Filme</span>
+          {posterUrl ? (
+            <img
+              src={posterUrl}
+              alt={`Poster do filme ${title}`}
+              className="w-full h-full object-cover"
+              loading="lazy"
+            />
+          ) : (
+            <span className="text-gray-400">Poster indisponível</span>
+          )}
         </Link>
 
         {/* botão de favorito */}
@@ -43,14 +56,11 @@ export default function MovieCard({
         </button>
       </div>
 
-      {/* rodapé */}
       <Link
         to={`/movie/${id}`}
         className="bg-[#1f2733] px-3 py-3 flex flex-col gap-2 hover:bg-[#253040] transition"
       >
         <p className="text-sm text-white font-semibold leading-snug line-clamp-2">
-          {/* se vier um título customizado (com highlight), usa ele.
-             senão usa o título puro */}
           {customTitle ?? title}
         </p>
 
