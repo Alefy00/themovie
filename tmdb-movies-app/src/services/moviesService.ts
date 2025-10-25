@@ -38,6 +38,30 @@ export type TmdbMovieDetail = {
   homepage: string | null;
 };
 
+export type TmdbSearchMovie = {
+  id: number;
+  title: string;
+  vote_average: number;
+  poster_path: string | null;
+};
+
+export type TmdbSearchResponse = {
+  page: number;
+  results: TmdbSearchMovie[];
+  total_results: number;
+  total_pages: number;
+};
+
+async function searchMovies(query: string, page = 1): Promise<TmdbSearchResponse> {
+  const { data } = await apiClient.get("/search/movie", {
+    params: {
+      query,
+      page,
+      include_adult: false,
+    },
+  });
+  return data;
+}
 
 async function getPopular(page = 1): Promise<TmdbPaginatedResponse<TmdbMovie>> {
   const { data } = await apiClient.get("/movie/popular", {
@@ -56,4 +80,5 @@ async function getById(id: number): Promise<TmdbMovieDetail> {
 export const moviesService = {
   getPopular,
   getById,
+  searchMovies,
 };
