@@ -4,8 +4,8 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 export type FavoriteMovie = {
   id: number;
   title: string;
+  vote_average: number;
   poster_path?: string | null;
-  vote_average?: number;
 };
 
 type FavoritesState = {
@@ -13,7 +13,11 @@ type FavoritesState = {
 };
 
 const initialState: FavoritesState = {
-  items: [],
+  items: [
+    { id: 101, title: "Filme Favorito 1", vote_average: 9.2 },
+    { id: 102, title: "Filme Favorito 2", vote_average: 8.8 },
+    { id: 103, title: "Filme Favorito 3", vote_average: 9.0 },
+  ],
 };
 
 const favoritesSlice = createSlice({
