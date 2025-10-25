@@ -89,7 +89,7 @@ export default function FavoritesPage() {
 
         <button
           onClick={handleClearAll}
-          className="self-start md:self-auto bg-red-600 hover:bg-red-500 text-white text-sm font-medium px-4 py-2 rounded-md transition"
+          className="self-start md:self-auto bg-red-500 hover:bg-red-400 text-white text-sm font-medium px-4 py-2 rounded-md transition"
         >
           Limpar todos
         </button>

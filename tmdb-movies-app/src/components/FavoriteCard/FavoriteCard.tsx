@@ -61,16 +61,17 @@ export default function FavoriteCard({
       {/* rodapé também vira Link pro detalhe */}
       <Link
         to={`/movie/${id}`}
-        className="bg-[#1f2733] px-3 py-3 flex flex-col gap-2 hover:bg-[#253040] transition"
+        className="bg-[#4e5d72] px-3 py-3 flex flex-col gap-2 hover:bg-[#253040] transition"
       >
-        <p className="text-sm text-white font-semibold leading-snug line-clamp-2">
+        <p className="text-base text-white font-semibold leading-snug line-clamp-2">
           {title}
         </p>
 
-        <span className="inline-block text-xs font-semibold bg-yellow-400 text-black rounded-md px-2 py-[2px] w-fit">
+        <span className="inline-block text-xs font-semibold bg-yellow-400 text-black rounded-md px-2 py-[2px] w-fit shadow-sm">
           {rating.toFixed(1)}
         </span>
       </Link>
+
     </div>
   );
 }

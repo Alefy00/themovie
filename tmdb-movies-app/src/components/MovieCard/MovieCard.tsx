@@ -81,7 +81,7 @@ export default function MovieCard({
       {/* rodapé */}
       <Link
         to={`/movie/${id}`}
-        className="bg-[#1f2733] px-3 py-3 flex flex-col gap-2 hover:bg-[#253040] transition"
+        className="bg-[#4e5d72] px-3 py-3 flex flex-col gap-2 hover:bg-[#253040] transition"
       >
         <p className="text-sm text-white font-semibold leading-snug line-clamp-2">
           {customTitle ?? title}
