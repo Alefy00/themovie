@@ -132,9 +132,9 @@ http://localhost:5173
 npm run build
 ```
 
-E para rodar localmente:
+E para visualizar o build localmente:
 ```bash
-npm run dev
+npm run preview
 ```
 
 ---
