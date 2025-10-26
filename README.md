@@ -106,7 +106,7 @@ Crie um arquivo na raiz do projeto com o seguinte conteúdo:
 
 ```bash
 VITE_TMDB_LANG=pt-BR
-VITE_TMDB_API_TOKEN=seu_token_aqui
+VITE_TMDB_API_TOKEN=Bearer seu_token_aqui
 ```
 
 > 💡 Exemplo de arquivo `.env.example` incluído no projeto para referência.
