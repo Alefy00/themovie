@@ -95,6 +95,16 @@ Os dados são obtidos via **thunks assíncronos** que consomem os endpoints da A
 git clone https://github.com/Alefy00/themovie.git
 cd tmdb-movies-app
 ```
+## 🧰 Scripts de Instalação e Execução
+
+| Script | Descrição |
+|--------|------------|
+| `npm install` | Instala todas as dependências necessárias |
+| `npm run dev` | Executa o servidor de desenvolvimento |
+| `npm run build` | Cria a build otimizada para produção |
+| `npm run preview` | Executa a build localmente |
+| `npm run lint` | Verifica e corrige problemas de lint |
+| `npm run setup` | (opcional) Instala dependências e inicia o projeto automaticamente |
 
 ### 2️⃣ Instalar dependências
 ```bash
